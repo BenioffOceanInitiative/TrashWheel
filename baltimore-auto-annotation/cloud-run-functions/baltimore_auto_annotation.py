@@ -168,7 +168,7 @@ def main(request):
 
     # If there are new images, spin up VM and run inference to get automatic annotations on them.
     if len(valid_folders_for_inference) > 0:
-        print(valid_folders_for_inference, yesterday)
+        print(f"Now processing: {valid_folders_for_inference}", yesterday)
         start_inference_vm(valid_folders_for_inference, yesterday)
 
     else:
