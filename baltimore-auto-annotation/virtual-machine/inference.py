@@ -16,6 +16,13 @@ client.setup_logging()
 
 import logging
 
+# Allowed image extensions for ultralytic's YOLOv11 (on their Github)
+IMG_FORMATS = {".bmp", ".dng", ".jpeg", ".jpg", ".mpo", ".png", ".tif", ".tiff", ".webp", ".pfm", ".heic"}
+
+# Default YOLOv11 model confidence is 0.25
+CONFIDENCE = 0.25
+
+BUCKET_NAME = "trashwheel"
 
 def download_gcs_folder(bucket_name, source_folder, destination_folder, storage_client):
     """
@@ -41,12 +48,7 @@ def list_gcs_images(bucket_name, images_folder, storage_client):
     """
     bucket = storage_client.bucket(bucket_name)
     blobs = bucket.list_blobs(prefix=images_folder)
-    # Allowed image extensions for ultralytic's YOLOv11 (on their Github)
-    image_extensions = (
-        ".bmp", ".dng", ".jpeg", ".jpg", ".mpo", ".png",
-        ".tif", ".tiff", ".webp", ".pfm", ".heic"
-    )
-    image_paths = [blob.name for blob in blobs if blob.name.lower().endswith(image_extensions)]
+    image_paths = [blob.name for blob in blobs if blob.name.lower().endswith(IMG_FORMATS)]
     print(f"Found {len(image_paths)} images in gs://{bucket_name}/{images_folder}")
     return image_paths
 
@@ -60,11 +62,11 @@ def process_batch(model, input_dir, output_dir):
     model.predict(
         source=str(input_dir),
         save=True,
-        save_txt=True,  # Enable saving text files
+        save_txt=True, # This will output text file annotations for any image that has >= 1 detected class
         imgsz=640,
         device=0,
-        batch=16
-        # conf=0.1
+        batch=16,
+        conf=CONFIDENCE
     )
 
     # The annotated text files are saved in 'runs/detect/predict/labels'
@@ -75,6 +77,15 @@ def process_batch(model, input_dir, output_dir):
             if file.is_file() and file.suffix == ".txt":
                 shutil.move(str(file), os.path.join(output_dir, file.name))
         shutil.rmtree(predicted_dir)
+
+    # Create an empty .txt file for every image that didn't get a label file
+    for image_file in Path(input_dir).iterdir():
+        if image_file.suffix.lower() in IMG_FORMATS:
+            label_file_name = image_file.stem + ".txt"
+            label_file_path = Path(output_dir) / Path(label_file_name)
+
+            if not label_file_path.exists():
+                label_file_path.touch()
 
 def get_latest_model_version(bucket_name, production_folder, storage_client):
     """
@@ -105,12 +116,13 @@ def main(folder_path):
       - Download the model files from GCS.
       - List the images in the provided folder.
       - Process the images in batches using YOLO for inference.
-      - Upload the annotated images back to GCS.
+      - Upload each batch of annotated text files back to GCS.
+      - Repeat.
     """
     # Initialize the Google Cloud Storage client.
     storage_client = storage.Client()
 
-    bucket_name = "trashwheel_baltimore_auto_annotation_test"
+    bucket_name = BUCKET_NAME
     model_gcs_path = get_latest_model_version(bucket_name, "models/production/", storage_client)
     
     images_gcs_path = os.path.join(folder_path, "images/")
@@ -198,18 +210,21 @@ if __name__ == "__main__":
     parser.add_argument(
         "folders",
         type=str,
-        help=("JSON string of folder paths in gs://trashwheel/ containing the images. "
-              "Example: '[\"1/2023-01-01/\"]'")
+        help=("JSON dumped list of strings of folder paths in gs://BUCKET_NAME/ containing images/"
+              "Example: '[\"1/2023-1-1/\"]'")
     )
     args = parser.parse_args()
 
     # The script expects a JSON string representing a list of folder paths.
     folder_paths = json.loads(args.folders)
+
+    logging.info(f"baltimore-auto-annotation {folder_paths}: Inference script started")
+
     try: 
         for folder_path in folder_paths:
             main(folder_path)
     except Exception as e:
-        logging.exception("Inference script failed unexpectedly, do not upload to CVAT")
+        logging.exception(f"baltimore-auto-annotation {folder_paths}: Inference script failed unexpectedly")
         raise
 
-    print("Finished inference script.")
+    logging.info(f"baltimore-auto-annotation {folder_paths}: Inference script succeeded")
