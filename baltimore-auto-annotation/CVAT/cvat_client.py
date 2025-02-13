@@ -6,14 +6,9 @@ import zipfile
 import os
 from google.cloud import storage
 from typing import Union
-import google.cloud.logging
-# Initialize Cloud Logging client
-client = google.cloud.logging.Client()
-client.setup_logging()
-import logging
 
 class CVATClient:
-    def __init__(self, username='tony-bosl', password='Benioff@1', org='BOSL', project_id=184108, bucket_mount_path='/trashwheel', class_names=[
+    def __init__(self, username=os.environ.get('CVAT_USERNAME'), password=os.environ.get('CVAT_PASSWORD'), org='BOSL', project_id=184108, bucket_mount_path='/trashwheel', class_names=[
         "plastic bottle", "polystyrene container", "food wrapper", 
         "polystyrene piece", "mini liquor bottle", "plastic bag",
         "plastic straw", "plastic toy", "ball", "plastic bottle cap",

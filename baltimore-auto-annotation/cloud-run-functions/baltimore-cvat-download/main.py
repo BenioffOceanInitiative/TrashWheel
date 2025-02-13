@@ -92,7 +92,7 @@ def cvat_download(request):
 
                 print(f"Device {device_id}, Date {date}: Has auto-annotations: {auto_annotations_exists}, Has annotations: {annotations_exists}")
 
-                if auto_annotations_exists and not annotations_exist:
+                if auto_annotations_exists and not annotations_exists:
                     print(f"Found candidate folder: Device {device_id}, Date {date}")
                     
                     try:

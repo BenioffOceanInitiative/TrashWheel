@@ -52,7 +52,7 @@ while ! command -v nvidia-smi &> /dev/null; do
 done
 
 # =============================
-# Step 1: Retrieve 'folders' Metadata
+# Step 1.1: Retrieve 'folders' Metadata
 # =============================
 echo "[$INSTANCE] Fetching 'folders' metadata..."
 FOLDERS=$(curl -s -H "Metadata-Flavor: Google" \
@@ -62,6 +62,18 @@ echo "[$INSTANCE] Folders metadata: $FOLDERS"
 
 # Export the FOLDERS variable for use in scripts
 export FOLDERS
+
+# =============================
+# Step 1.2: Retrieve environment variables for cvat_client.py
+# =============================
+echo "[$INSTANCE] Fetching CVAT environment variables..."
+
+CVAT_USERNAME=$(curl -f -s -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/cvat_username")
+CVAT_PASSWORD=$(curl -f -s -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/cvat_password")
+
+# Export as environment variables
+export CVAT_USERNAME
+export CVAT_PASSWORD
 
 # =============================
 # Step 2: Install Required Packages
@@ -118,7 +130,7 @@ curl -sSL -o "$SCRIPT_DIR/CVAT/cvat_client.py" \
 # Mount the GCS Bucket for the upload_to_cvat script
 mkdir -p "/trashwheel"
 echo "[$INSTANCE] Mounting GCS bucket..."
-sudo gcsfuse -o allow_other --implicit-dirs trashwheel "/trashwheels"
+sudo gcsfuse -o allow_other --implicit-dirs trashwheel "/trashwheel"
 
 # Install dependencies from requirements.txt
 pip install --no-cache-dir -r $SCRIPT_DIR/requirements.txt

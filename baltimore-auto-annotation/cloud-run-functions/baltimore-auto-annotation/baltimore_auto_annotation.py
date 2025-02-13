@@ -16,6 +16,9 @@ TRASH_WHEELS_STR = os.environ.get('TRASH_WHEELS', '["1", "2", "3", "4", "5"]')
 TRASH_WHEELS = json.loads(TRASH_WHEELS_STR)
 INSTANCE_TEMPLATE_NAME = os.environ.get("INSTANCE_TEMPLATE_NAME")
 
+CVAT_PASSWORD = os.environ.get("CVAT_PASSWORD")
+CVAT_USERNAME = os.environ.get("CVAT_USERNAME")
+
 def start_inference_vm(valid_folders_for_inference, date):
     """Provisions a VM from an instance template identified in name by the date, passing in Metadata key "folders" to run inference on
 
@@ -60,7 +63,7 @@ def start_inference_vm(valid_folders_for_inference, date):
     # Use the disks from the template
     instance.disks = list(instance_template.properties.disks)
 
-    # Merge metadata: Preserve what's in the template, adding our 'folders' key to it.
+    # Merge metadata: Preserve what's in the template, adding our 'folders' and cvat environment variable keys to it.
     merged_items = []
     existing_metadata = instance_template.properties.metadata
 
@@ -73,6 +76,19 @@ def start_inference_vm(valid_folders_for_inference, date):
         compute_v1.Items(
             key="folders",
             value=json.dumps(valid_folders_for_inference)  
+        )
+    )
+
+    merged_items.append(
+        compute_v1.Items(
+            key="cvat_username",
+            value=CVAT_USERNAME
+        )
+    )
+    merged_items.append(
+        compute_v1.Items(
+            key="cvat_password",
+            value=CVAT_PASSWORD
         )
     )
 
@@ -146,7 +162,7 @@ def main(request):
 
         # Check if there are any images under the 'auto-annotations' folder
         auto_annotations_folder_path = f"{date_wheel_path}auto-annotations/"
-        auto_annotations_blobs = list(storage_client.list_blobs(bucket_name, prefix=auto_annotations_folder_path, max_results=1))
+        auto_annotations_blobs = list(storage_client.list_blobs(BUCKET_NAME, prefix=auto_annotations_folder_path, max_results=1))
 
         if auto_annotations_blobs: # This insures that there's at least one file in there. However, check manifest.json TODOs for this as this is not the best solution.
             print(f"'auto-annotations' folder already contains files in '{date_wheel_path}'.")
