@@ -17,7 +17,8 @@ client.setup_logging()
 import logging
 
 # Allowed image extensions for ultralytic's YOLOv11 (on their Github)
-IMG_FORMATS = {".bmp", ".dng", ".jpeg", ".jpg", ".mpo", ".png", ".tif", ".tiff", ".webp", ".pfm", ".heic"}
+IMG_FORMATS = (".bmp", ".dng", ".jpeg", ".jpg", ".mpo", ".png", ".tif", ".tiff", ".webp", ".pfm", ".heic")
+
 
 # Default YOLOv11 model confidence is 0.25
 CONFIDENCE = 0.25
