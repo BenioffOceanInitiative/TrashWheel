@@ -112,20 +112,20 @@ SCRIPT_DIR="/usr/local/bin"
 mkdir -p $SCRIPT_DIR
 
 curl -sSL -o "$SCRIPT_DIR/inference.py" \
-    "https://raw.githubusercontent.com/BenioffOceanInitiative/TrashWheel/baltimore-auto-annotation/virtual-machine/inference.py"
+    "https://raw.githubusercontent.com/BenioffOceanInitiative/TrashWheel/main/baltimore-auto-annotation/virtual-machine/inference.py"
 
 curl -sSL -o "$SCRIPT_DIR/requirements.txt" \
-    "https://raw.githubusercontent.com/BenioffOceanInitiative/TrashWheel/baltimore-auto-annotation/virtual-machine/requirements.txt"
+    "https://raw.githubusercontent.com/BenioffOceanInitiative/TrashWheel/main/baltimore-auto-annotation/virtual-machine/requirements.txt"
 
 curl -sSL -o "$SCRIPT_DIR/upload_to_cvat.py" \
-    "https://raw.githubusercontent.com/BenioffOceanInitiative/TrashWheel/baltimore-auto-annotation/virtual-machine/upload_to_cvat.py"
+    "https://raw.githubusercontent.com/BenioffOceanInitiative/TrashWheel/main/baltimore-auto-annotation/virtual-machine/upload_to_cvat.py"
 
 # 3. CVAT folder
 mkdir -p "$SCRIPT_DIR/CVAT"
 touch "$SCRIPT_DIR/CVAT/__init__.py"
 
 curl -sSL -o "$SCRIPT_DIR/CVAT/cvat_client.py" \
-    "https://raw.githubusercontent.com/BenioffOceanInitiative/TrashWheel/baltimore-auto-annotation/CVAT/cvat_client.py"
+    "https://raw.githubusercontent.com/BenioffOceanInitiative/TrashWheel/main/baltimore-auto-annotation/CVAT/cvat_client.py"
 
 # Mount the GCS Bucket for the upload_to_cvat script
 mkdir -p "/trashwheel"
