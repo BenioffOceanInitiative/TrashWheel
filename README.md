@@ -161,6 +161,11 @@ Ensure the following roles are granted:
 - `roles/iam.serviceAccountAdmin`
 - `roles/storage.admin`
 
+## Other Resources
+
+1. Check the JIRA Ticket: https://boi-ucsb.atlassian.net/jira/software/projects/ENG/boards/3?selectedIssue=ENG-627
+2. Check the comprehensive, internal documentation: https://boi-ucsb.atlassian.net/wiki/spaces/BE/pages/85393412/Semi-Automatic+Annotation+Pipeline+Management
+
 ---
 
 ## Contributing
