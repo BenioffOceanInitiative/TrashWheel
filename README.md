@@ -108,7 +108,7 @@ The pipeline integrates several GCP components:
 
 - **VM Scripts (in the TrashWheel GitHub repository):**
   - `startup.sh`:  
-    - Logs tasks, errors, and self-deletion events (prefixed with `[baltimore-auto-annotation-YYYY-M-D]`).
+    - Handles the entire VM lifecycle. Logs tasks, errors, and self-deletion events (prefixed with `[baltimore-auto-annotation-YYYY-M-D]`).
   - `inference.py`:  
     - Runs batched image inference and outputs annotation text files.
     - Supports adjustable confidence thresholds.
