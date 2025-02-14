@@ -129,15 +129,25 @@ The pipeline integrates several GCP components:
 
 ## Redeployment & Updating
 
-**Manual Redeployment:**
+
+**Manual Redeployment when Updating Cloud Run Functions or CVAT Client:**
+- To update production:
+  1. Manually update the Cloud Run functions on GCP.
+
+**Planned Improvements:**
+- Consider using GitHub Actions to automatically push changes to Cloud Run functions upon merging to the main branch.
+
+**Manual Redeployment when Updating startup.sh:**
 - To update production:
   1. Create a new VM instance template by selecting the current one and clicking **"Create Similar"**.
   2. In the **Management** section, update the startup script.
   3. Update the `INSTANCE_TEMPLATE_NAME` environment variable in the `baltimore-auto-annotation` Cloud Run function.
 
+**Deployment for Other Script Updates:**
+- Any other script change will be pulled automatically from the main branch, no deployment process needed.
+
 **Planned Improvements:**
-- Automate the update of the instance template and runtime variables by fetching the latest `startup.sh` directly from the repository.
-- Consider using GitHub Actions to automatically push changes to Cloud Run functions upon merging to the main branch.
+- Automate the provision of the instance template and runtime variables by fetching the latest `startup.sh` directly from the repository.
 
 ---
 
@@ -184,4 +194,4 @@ For major changes, please open an issue first to discuss what you would like to 
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
