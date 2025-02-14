@@ -31,6 +31,8 @@ The **Semi-Automatic Annotation Pipeline** is designed to:
 - Run inference on new images using a YOLO model.
 - Upload auto-generated annotations to CVAT for human review.
 - Leverage GCP services (Cloud Schedulers, Cloud Run, Compute Engine) for a scalable and cost-efficient solution.
+<img width="464" alt="Screenshot 2025-02-14 at 11 04 26 AM" src="https://github.com/user-attachments/assets/2607a947-eab6-4e1c-b7a9-0fec66e17f62" />
+<img width="157" alt="Screenshot 2025-02-14 at 11 04 42 AM" src="https://github.com/user-attachments/assets/52858fb9-f47f-435e-b189-58e2a434a957" />
 
 ---
 
