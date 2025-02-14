@@ -45,7 +45,7 @@ The pipeline integrates several GCP components:
 - **Compute Engine Instances** run on-demand for image inference and CVAT uploads.
 - **Service Accounts** provide necessary permissions for automated resource management.
 
-> **Note:** An architecture diagram (created in Lucidchart) outlines the complete flow and is available in the repository.
+> **Note:** An architecture diagram (created in Lucidchart) outlines the complete flow and is available in the repository. https://lucid.app/lucidchart/fc0bedba-274d-41ba-a40d-acddbcb5c3b9/edit?existing=1&docId=fc0bedba-274d-41ba-a40d-acddbcb5c3b9&shared=true&page=0_0#
 
 ---
 
